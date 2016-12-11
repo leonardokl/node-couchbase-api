@@ -1,46 +1,53 @@
 const Customer = require('../models/customer')
+const ottomanPromises = require('../lib/ottoman-promises')
 
 const customerController = {
-  index(req, res) {
-    Customer.getAll()
-      .then(result => res.status(200).json(result))
-      .catch(error => res.status(404).json({error}))
+  index(req, res, next) {
+    const filters = {_type: 'Customer'}
+    const options = {limit: 10}
+
+    Customer.find(filters, options)
+      .then(res.ok)
+      .catch(next)
   },
 
-  create(req, res) {
+  create(req, res, next) {
     const {body} = req
 
     Customer.create(body)
-      .then(response => res.status(201).json(response))
-      .catch(error => res.status(500).json({error}))
+      .then(res.created)
+      .catch(next)
   },
 
-  getByID(req, res) {
-    const {customerID} = req.params
+  getById(req, res, next) {
+    const {customerId} = req.params
 
-    Customer.getByID(customerID)
-      .then(result => res.status(200).json(result.value))
-      .catch(error => res.status(404).json({error}))
+    Customer.getById(customerId)
+      .then(res.ok)
+      .catch(next)
   },
 
-  updateByID(req, res) {
-    const {customerID} = req.params
+  updateById(req, res, next) {
+    const {customerId} = req.params
     const {body} = req
 
-    Customer.updateByID(customerID, body)
-      .then(result => res.status(200).json(result))
-      .catch(error => res.status(500).json({error}))
+    Customer.getById(customerId)
+      .then(country => Object.assign(country, body))
+      .then(ottomanPromises.save)
+      .then(res.ok)
+      .catch(next)
   },
 
-  removeByID(req, res) {
-    const {customerID} = req.params
+  removeById(req, res, next) {
+    const {customerId} = req.params
+    const getSuccessMessage = () => ({message: `${customerId} removed`})
 
-    Customer.removeByID(customerID)
-      .then(result => res.status(200).json({
-        message: `Customer ${customerID} removed`
-      }))
-      .catch(error => res.status(404).json({error}))
-  },
+    Customer.getById(customerId)
+      .then(ottomanPromises.remove)
+      .then(getSuccessMessage)
+      .then(res.ok)
+      .catch(next)
+  }
 }
 
 module.exports = customerController

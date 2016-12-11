@@ -1,7 +1,7 @@
 {
-  "name": "node-couchbase",
+  "name": "node-couchbase-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "Node.js API to access Couchbase",
   "main": "index.js",
   "scripts": {
     "start": "NODE_ENV=production node index --harmony",

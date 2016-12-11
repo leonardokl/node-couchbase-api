@@ -9,9 +9,9 @@ router.route('/')
 	.get(customerController.index)
 	.post(customerController.create)
 
-router.route('/:customerID')
-	.get(customerController.getByID)
-	.put(customerController.updateByID)
-	.delete(customerController.removeByID)
+router.route('/:customerId')
+	.get(customerController.getById)
+	.put(customerController.updateById)
+	.delete(customerController.removeById)
 
 module.exports = router

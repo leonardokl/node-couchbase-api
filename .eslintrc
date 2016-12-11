@@ -7,6 +7,6 @@
         "max-params": ["error", 4],
         "no-console": 1,
         "quotes": ["error", "single"],
-        newline-after-var: ["error", "always"]
+        "newline-after-var": ["error", "always"]
     }
 }

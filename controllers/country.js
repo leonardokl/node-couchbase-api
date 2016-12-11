@@ -1,5 +1,5 @@
-const Promise = require('bluebird')
 const Country = require('../models/country')
+const ottomanPromises = require('../lib/ottoman-promises')
 
 const CountryController = {
   index(req, res, next) {
@@ -33,17 +33,18 @@ const CountryController = {
 
     Country.getById(countryId)
       .then(country => Object.assign(country, body))
-      .then(country => Promise.promisify(country.save, {context: country})())
+      .then(ottomanPromises.save)
       .then(res.ok)
       .catch(next)
   },
 
   remove(req, res, next) {
     const {countryId} = req.params
+    const getSuccessMessage = () => ({message: `${countryId} removed`})
 
     Country.getById(countryId)
-      .then(country => Promise.promisify(country.remove, {context: country})())
-      .then(() => ({message: `${countryId} removed`}))
+      .then(ottomanPromises.remove)
+      .then(getSuccessMessage)
       .then(res.ok)
       .catch(next)
   }
