@@ -1,8 +1,10 @@
-const Customer = require('../model/customer')
+const Customer = require('../models/customer')
 
 const customerController = {
   index(req, res) {
-    res.status(500).json({error: 'cound not list'})
+    Customer.getAll()
+      .then(result => res.status(200).json(result))
+      .catch(error => res.status(404).json({error}))
   },
 
   create(req, res) {

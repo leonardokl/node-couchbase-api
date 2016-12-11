@@ -1,7 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const router = new express.Router()
-const customerController = require('../controller/customer')
+const customerController = require('../controllers/customer')
 
 router.use(bodyParser.json())
 
