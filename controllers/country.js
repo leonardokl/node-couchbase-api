@@ -1,14 +1,23 @@
 const Country = require('../models/country')
 const ottomanPromises = require('../lib/ottoman-promises')
+const pagination = require('../lib/pagination')
 
 const CountryController = {
   index(req, res, next) {
+    const {limit, skip} = req.query
+    const options = {limit, skip}
     const filters = {_type: 'Country'}
-    const options = {limit: 10}
 
-    Country.find(filters, options)
-      .then(res.ok)
-      .catch(next)
+    Promise.all([
+      Country.find(filters, options),
+      Country.count(filters, {})
+    ]).then((response) => {
+      const [countries, count] = response
+
+      pagination.addHeaders({res, count, options})
+
+      return countries
+    }).then(res.ok).catch(next)
   },
 
   create(req, res, next) {
@@ -38,7 +47,7 @@ const CountryController = {
       .catch(next)
   },
 
-  remove(req, res, next) {
+  removeById(req, res, next) {
     const {countryId} = req.params
     const getSuccessMessage = () => ({message: `${countryId} removed`})
 

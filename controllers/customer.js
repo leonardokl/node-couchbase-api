@@ -1,14 +1,23 @@
 const Customer = require('../models/customer')
 const ottomanPromises = require('../lib/ottoman-promises')
+const pagination = require('../lib/pagination')
 
 const customerController = {
   index(req, res, next) {
+    const {limit, skip} = req.query
+    const options = {limit, skip}
     const filters = {_type: 'Customer'}
-    const options = {limit: 10}
 
-    Customer.find(filters, options)
-      .then(res.ok)
-      .catch(next)
+    Promise.all([
+      Customer.find(filters, options),
+      Customer.count(filters, {})
+    ]).then((response) => {
+      const [customers, count] = response
+
+      pagination.addHeaders({res, count, options})
+
+      return customers
+    }).then(res.ok).catch(next)
   },
 
   create(req, res, next) {

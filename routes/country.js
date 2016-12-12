@@ -12,6 +12,6 @@ router.route('/')
 router.route('/:countryId')
 	.get(countryController.getById)
   .put(countryController.updateById)
-  .delete(countryController.remove)
+  .delete(countryController.removeById)
 
 module.exports = router
